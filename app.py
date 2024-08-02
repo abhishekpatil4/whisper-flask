@@ -2,11 +2,11 @@ from flask import Flask, request, jsonify
 import os
 from flask_cors import CORS
 from openai import OpenAI
-from openai import OpenAI
-os.environ["OPENAI_API_KEY"] = ""
-client = OpenAI()
+from dotenv import load_dotenv
 import json
 
+load_dotenv()
+client = OpenAI()
 
 app = Flask(__name__)
 CORS(app)
@@ -18,6 +18,7 @@ def transcribe(audio_file, prompt):
           file=audio,
           prompt=prompt
         )
+    print(translation.text)
     return translation.text
 
 def generate_corrected_transcript(temperature, system_prompt, audio_file):

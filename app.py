@@ -38,24 +38,21 @@ def generate_corrected_transcript(temperature, system_prompt, audio_file):
     return response.choices[0].message.content
     
 def whisper():
-    system_prompt = """You are a helpful assistant in a hotel, you will be given some content which describes a complaint, room number, area/location, priority. Analyse the problem and return a json object with the following attributes and follow the format strictly (case sentitive): 
+    system_prompt = """You are a helpful assistant in a hotel, you will be given some content which describes a fault type, device name, device code and description. Analyze the problem and return a JSON object with the following attributes and follow the format strictly (case sensitive):
     {
-        complaint: '',
-        roomNumber: '',
-        area: '',
-        department: '',
+        faultType: '',
+        deviceName: '',
+        deviceCode: '',
         description: '',
         priority: 'Low',
     },
-    attribute description: 
-    complaint: Describe the complaint in a short sentence, eg: AC is not working, Hot water unavailable
-    roomNumber: See if the room number is mentioned, or else send 0
-    area: see if you can identify the area, eg: water is leaking near the balcony, then balcony is the answer. if no specific area is mentioned or you cannot identify then set the value to na
-    department: categorise the probelm into one of the following category and set the value (case sentitive) -> plubming, electrical, hvac, housekeeping, general
-    description: describe the problem in 1-2 lines. 
-    priority: its either "low", "medium" or "high", by default its "low" if the user specifies something then set that value (case sensitive)
+        attribute description:
+        faultType: extract the type of fault if mentioned, else set the value to na
+        deviceName: extract the device name if mentioned, else set the value to na
+        deviceCode: extract the device code if mentioned, else set the value to na
+        description: describe the problem in 1-2 lines. 
 
-    Note: give me the response strictly in a json format in a single line and nothing else.
+        Note: give me the response strictly in a JSON format in a single line and nothing else.
     """
     corrected_text = generate_corrected_transcript(0, system_prompt, "./uploads/recording.wav")
     # print(corrected_text)

@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import json
 
 load_dotenv()
+os.environ["OPENAI_API_KEY"] = ""
 client = OpenAI()
 
 app = Flask(__name__)

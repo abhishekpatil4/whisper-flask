@@ -40,21 +40,34 @@ def generate_corrected_transcript(temperature, system_prompt, audio_file):
     return response.choices[0].message.content
     
 def whisper():
-    system_prompt = """You are a helpful assistant in a hotel, you will be given some content which describes a fault type, device name, device code and description. Analyze the problem and return a JSON object with the following attributes and follow the format strictly (case sensitive):
-    {
-        faultType: '',
-        deviceName: '',
-        deviceCode: '',
-        description: '',
-        priority: 'Low',
-    },
-        attribute description:
-        faultType: extract the type of fault if mentioned, else set the value to na
-        deviceName: extract the device name if mentioned, else set the value to na
-        deviceCode: extract the device code if mentioned, else set the value to na
-        description: describe the problem in 1-2 lines. 
+    system_prompt = """You are an intelligent hotel management assistant. You will receive content describing a problem, fault, or issue in the hotel. This content may include details like 'device name', 'device code'. Your task is to analyze this input and return a structured JSON object. Follow these guidelines strictly:
+        1. Return only a single-line JSON object with no additional text.
+        2. Use the following structure (case-sensitive):
 
-        Note: give me the response strictly in a JSON format in a single line and nothing else.
+        {
+            faultType: '',
+            deviceName: '',
+            deviceCode: '',
+            description: '',
+            priority: 'Low',
+        }
+
+        3. Attribute details:
+        - faultType: Based on the content provided identify the specific problem/issue/fault and mention it in a short sentence (e.g., "AC not working", "WiFi disconnecting", "Heater not working"). If no clear fault is mentioned, use "Unspecified unclear".
+        - deviceName: Extract the device or item name. If multiple devices are mentioned, list the primary one. If not applicable, use "na".
+        - deviceCode: Extract any alphanumeric code associated with the device. If not mentioned, use "na".
+        - description: Based on the content provide a concise summary of the problem in 1-2 sentences. 
+        - priority: Assess the urgency:
+        * 'High': Critical issues affecting guest safety, comfort, or hotel operations
+        * 'Medium': Moderate issues that need attention but aren't immediately critical
+        * 'Low': Minor issues
+
+        4. Handle ambiguities:
+        - If the input is vague, make reasonable inferences based on context.
+        - For conflicting information, prioritize the most recent or severe interpretation.
+        - If critical information is missing, use 'unclear' values that indicate the need for more details.
+
+        Parse the input carefully to extract all relevant information, even if not explicitly categorized in the original text.
     """
     corrected_text = generate_corrected_transcript(0, system_prompt, "./uploads/recording.wav")
     # print(corrected_text)
